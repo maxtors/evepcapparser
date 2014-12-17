@@ -37,8 +37,8 @@ class EvePcapParser(object):
         logging.basicConfig(level=logging.DEBUG)
         self.__logger = logging.getLogger(self.__class__.__name__)
 
-    def __parseLine(self, line, lineNumber):
-        """Internal function that parses a line of an EVE log.
+    def parseLine(self, line, lineNumber=None):
+        """Function that parses a line of an EVE log.
 
         This function will recive a line from a EVE json log that contains
         an event. It will try to load the line and parse it to json. After
@@ -54,11 +54,13 @@ class EvePcapParser(object):
                 decoded_data = base64.b64decode(packet_data)
                 pcap = Ether(decoded_data)
                 return pcap, json_data['timestamp']
-
+            else:
+                return None, None
         except (ValueError, KeyError), e:
-            raise EvePcapError('%s (line %s)' % (str(e), lineNumber))            
-
-        return None, None
+            if lineNumber != None:
+                raise EvePcapError('%s (line %s)' % (str(e), lineNumber))            
+            else:
+                raise EvePcapError(str(e))
 
     def parseFile(self, filename):
         """Parses a eve.json file and extracts pcaps.
