@@ -92,7 +92,7 @@ class EvePcapParser(object):
 
             # Get the pcap and timestamp of this event logging 
             try:
-                resultingPcap, timestamp = self.__parseLine(line, lineNumber)
+                resultingPcap, timestamp = self.parseLine(line, lineNumber)
                 if resultingPcap != None:
                     wrpcap("%s.pcap" % (timestamp), resultingPcap)
             
